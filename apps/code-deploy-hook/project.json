@@ -1,0 +1,32 @@
+{
+  "root": "apps/code-deploy-hook",
+  "sourceRoot": "apps/code-deploy-hook/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/code-deploy-hook",
+        "main": "apps/code-deploy-hook/src/main.ts",
+        "tsConfig": "apps/code-deploy-hook/tsconfig.app.json"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/code-deploy-hook/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/code-deploy-hook"],
+      "options": {
+        "jestConfig": "apps/code-deploy-hook/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

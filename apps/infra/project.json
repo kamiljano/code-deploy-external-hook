@@ -1,0 +1,22 @@
+{
+  "root": "apps/infra",
+  "sourceRoot": "apps/infra/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "cdk synth",
+        "cwd": "apps/infra"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/infra/**/*.ts"]
+      }
+    }
+  },
+  "tags": []
+}
