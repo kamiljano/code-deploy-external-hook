@@ -35,8 +35,9 @@ describe('Given the code-deploy-hook lambda handler, When the lambda is invoked 
           ),
         },
         id: {
-          S: `${event.DeploymentId}:${event.LifecycleEventHookExecutionId}`,
+          S: 'WordPress_App:WordPress_DG:PRE_TRAFFIC',
         },
+        deploymentGroupName: { S: 'WordPress_DG' },
         deploymentId: { S: event.DeploymentId },
         lifecycleEventHookExecutionId: {
           S: event.LifecycleEventHookExecutionId,

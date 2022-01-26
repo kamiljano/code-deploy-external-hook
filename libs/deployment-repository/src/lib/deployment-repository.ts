@@ -14,23 +14,27 @@ export class DeploymentRepository {
   ) {}
 
   async saveDeployment(deployment: Omit<Deployment, 'id' | 'ttl' | 'stage'>) {
+    if (!this.props) {
+      throw new Error(
+        'The additional properties have to be configured to use this method'
+      );
+    }
     await this.db.send(
       new PutItemCommand({
         TableName: this.table,
         Item: {
-          ...(this.props
-            ? {
-                ttl: {
-                  N: String(this.props.ttl + Math.ceil(Date.now() / 1000)),
-                },
-                stage: {
-                  S: this.props.hookType,
-                },
-              }
-            : {}),
           id: {
-            S: `${deployment.deploymentId}:${deployment.lifecycleEventHookExecutionId}`,
+            S: `${deployment.applicationName}:${
+              deployment.deploymentGroupName
+            }:${this.props!.hookType}`,
           },
+          ttl: {
+            N: String(this.props.ttl + Math.ceil(Date.now() / 1000)),
+          },
+          stage: {
+            S: this.props.hookType,
+          },
+          deploymentGroupName: { S: deployment.deploymentGroupName },
           deploymentId: { S: deployment.deploymentId },
           lifecycleEventHookExecutionId: {
             S: deployment.lifecycleEventHookExecutionId,

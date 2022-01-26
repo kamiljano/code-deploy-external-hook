@@ -15,5 +15,6 @@ export const handle = wrap(async (event: CodeDeployHookEvent) => {
     deploymentId: event.DeploymentId,
     lifecycleEventHookExecutionId: event.LifecycleEventHookExecutionId,
     applicationName: deployment.applicationName as string,
+    deploymentGroupName: deployment.deploymentGroupName as string,
   });
 });

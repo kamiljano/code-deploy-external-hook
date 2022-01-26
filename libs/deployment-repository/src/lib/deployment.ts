@@ -4,5 +4,6 @@ export interface Deployment {
   deploymentId: string;
   lifecycleEventHookExecutionId: string;
   applicationName: string;
+  deploymentGroupName: string;
   stage: 'PRE_TRAFFIC' | 'POST_TRAFFIC';
 }
