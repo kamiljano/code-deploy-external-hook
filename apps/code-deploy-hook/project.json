@@ -7,6 +7,7 @@
       "executor": "@nrwl/node:build",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "externalDependencies": "none",
         "outputPath": "dist/apps/code-deploy-hook",
         "main": "apps/code-deploy-hook/src/main.ts",
         "tsConfig": "apps/code-deploy-hook/tsconfig.app.json"

@@ -1,9 +1,11 @@
 #!/usr/bin/env node
+import { App } from '@aws-cdk/core';
 import 'source-map-support/register';
-import * as cdk from 'aws-cdk-lib';
 import { InfraStack } from '../lib/infra-stack';
 
-const app = new cdk.App();
+const app = new App();
 new InfraStack(app, 'InfraStack', {
-
+  stackName: 'code-deploy-external-hook',
+  description:
+    'The stack contains tools allowing to verify the deployment from outside of AWS',
 });

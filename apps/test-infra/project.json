@@ -10,11 +10,11 @@
         "cwd": "apps/infra"
       }
     },
-    "deploy": {
+    "test-deploy": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "command": "cdk deploy --require-approval never",
-        "cwd": "apps/infra"
+        "cwd": "apps/test-infra"
       }
     },
     "lint": {

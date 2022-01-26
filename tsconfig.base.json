@@ -15,7 +15,11 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@code-deploy-external-hook/deployment-repository": [
+        "libs/deployment-repository/src/index.ts"
+      ]
+    }
   },
   "exclude": ["node_modules", "tmp", "cdk.out"]
 }

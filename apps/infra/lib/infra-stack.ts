@@ -1,16 +1,57 @@
-import { Stack, StackProps } from 'aws-cdk-lib';
-import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+import { CfnOutput, Construct, Stack, StackProps } from '@aws-cdk/core';
+import DeploymentTable from './constructs/deployment-table';
+import CodeDeployHook from './constructs/functions/code-deploy-hook';
+import { HookInvocationPolicy } from './constructs/hook-invocation-policy';
 
 export class InfraStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
+    const deploymentTable = new DeploymentTable(this, 'DeploymentTable', {
+      tableName: `${this.stackName}-deployments`,
+    });
 
-    // example resource
-    // const queue = new sqs.Queue(this, 'InfraQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
+    const preTrafficHook = new CodeDeployHook(this, 'PreHook', {
+      functionName: `${this.stackName}-pre-traffic-hook`,
+      deploymentTable,
+      lifecycleStage: 'PRE_TRAFFIC',
+    });
+
+    const postTrafficHook = new CodeDeployHook(this, 'PostHook', {
+      functionName: `${this.stackName}-post-traffic-hook`,
+      deploymentTable,
+      lifecycleStage: 'POST_TRAFFIC',
+    });
+
+    const hookInvocationPolicy = new HookInvocationPolicy(
+      this,
+      'HookInvocationPolicy',
+      {
+        managedPolicyName: `${this.stackName}-invocation-policy`,
+        postTrafficHook,
+        preTrafficHook,
+      }
+    );
+
+    new CfnOutput(this, 'HookInvocationRoleArn', {
+      value: hookInvocationPolicy.managedPolicyArn,
+      description:
+        'A policy you should attach to the CodeDeploy role in order to be able to invoke the pre/post-traffic hooks',
+      exportName: `${this.stackName}-invocation-policy`,
+    });
+
+    new CfnOutput(this, 'PreHookArn', {
+      value: preTrafficHook.functionArn,
+      description:
+        'ARN of the function that CodeDeploy should invoke as a pre-traffic hook',
+      exportName: `${this.stackName}-pre-traffic-function`,
+    });
+
+    new CfnOutput(this, 'PostHookArn', {
+      value: postTrafficHook.functionArn,
+      description:
+        'ARN of the function that CodeDeploy should invoke as a post-traffic hook',
+      exportName: `${this.stackName}-post-traffic-function`,
+    });
   }
 }
