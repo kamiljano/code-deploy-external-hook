@@ -1,4 +1,11 @@
-import { AwsIntegration, RestApi } from '@aws-cdk/aws-apigateway';
+import {
+  AwsIntegration,
+  JsonSchemaType,
+  MethodOptions,
+  Model,
+  RequestValidator,
+  RestApi,
+} from '@aws-cdk/aws-apigateway';
 import {
   PolicyDocument,
   PolicyStatement,
@@ -43,14 +50,6 @@ export default class Api extends RestApi {
 
     const deploymentsPath = this.root.addResource('deployments');
 
-    const methodOptions = {
-      methodResponses: [
-        { statusCode: '200' },
-        { statusCode: '400' },
-        { statusCode: '500' },
-      ],
-    };
-
     const hookPath = deploymentsPath
       .addResource('{applicationName}')
       .addResource('{hookType}');
@@ -75,6 +74,51 @@ export default class Api extends RestApi {
         },
       },
     ];
+
+    const deploymentGroupNamesModel = new Model(
+      this,
+      'DeploymentGroupNamesModel',
+      {
+        restApi: this,
+        contentType: 'application/json',
+        description: 'Model with deploymentGroupNames string array',
+        modelName: 'DeploymentGroupNamesModel',
+        schema: {
+          type: JsonSchemaType.OBJECT,
+          required: ['deploymentGroupNames'],
+          properties: {
+            deploymentGroupNames: {
+              type: JsonSchemaType.ARRAY,
+              items: {
+                type: JsonSchemaType.STRING,
+              },
+            },
+          },
+        },
+      }
+    );
+
+    const requestValidator = new RequestValidator(
+      this,
+      'DeploymentGroupNamesValidator',
+      {
+        restApi: this,
+        requestValidatorName: 'DeploymentGroupNames',
+        validateRequestBody: true,
+      }
+    );
+
+    const methodOptions: MethodOptions = {
+      methodResponses: [
+        { statusCode: '200' },
+        { statusCode: '400' },
+        { statusCode: '500' },
+      ],
+      requestValidator,
+      requestModels: {
+        'application/json': deploymentGroupNamesModel,
+      },
+    };
 
     hookPath.addMethod(
       'POST',
@@ -121,9 +165,7 @@ export default class Api extends RestApi {
         },
         service: 'dynamodb',
       }),
-      {
-        ...methodOptions,
-      }
+      methodOptions
     );
   }
 }
