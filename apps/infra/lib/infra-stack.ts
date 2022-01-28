@@ -1,4 +1,5 @@
 import { CfnOutput, Construct, Stack, StackProps } from '@aws-cdk/core';
+import Api from './constructs/api';
 import DeploymentTable from './constructs/deployment-table';
 import CodeDeployHook from './constructs/functions/code-deploy-hook';
 import { HookInvocationPolicy } from './constructs/hook-invocation-policy';
@@ -32,6 +33,16 @@ export class InfraStack extends Stack {
         preTrafficHook,
       }
     );
+
+    const api = new Api(this, 'Api', {
+      restApiName: this.stackName,
+      deploymentTable,
+    });
+
+    new CfnOutput(this, 'ApiUrl', {
+      value: api.url,
+      description: 'Url to query the deployment status',
+    });
 
     new CfnOutput(this, 'HookInvocationRoleArn', {
       value: hookInvocationPolicy.managedPolicyArn,
