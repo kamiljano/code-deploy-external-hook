@@ -24,8 +24,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/code-deploy-hook"],
       "options": {
-        "jestConfig": "apps/code-deploy-hook/jest.config.js",
-        "passWithNoTests": true
+        "jestConfig": "apps/code-deploy-hook/jest.config.js"
       }
     }
   },

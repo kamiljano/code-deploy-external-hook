@@ -2,6 +2,7 @@ import {
   LambdaApplication,
   LambdaDeploymentGroup,
 } from '@aws-cdk/aws-codedeploy';
+import { LambdaDeploymentConfig } from '@aws-cdk/aws-codedeploy/lib/lambda/deployment-config';
 import {
   ManagedPolicy,
   PolicyDocument,
@@ -47,6 +48,11 @@ export class TestInfraStack extends Stack {
       deploymentGroupName: `${this.stackName}-test`,
       application: app,
       alias,
+      autoRollback: {
+        failedDeployment: true,
+        stoppedDeployment: true,
+      },
+      deploymentConfig: LambdaDeploymentConfig.ALL_AT_ONCE,
       preHook: LambdaFunction.fromFunctionArn(
         this,
         'PreHook',

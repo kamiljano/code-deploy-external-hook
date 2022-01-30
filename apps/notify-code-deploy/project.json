@@ -1,0 +1,33 @@
+{
+  "root": "apps/notify-code-deploy",
+  "sourceRoot": "apps/notify-code-deploy/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "externalDependencies": "none",
+        "outputPath": "dist/apps/notify-code-deploy",
+        "main": "apps/notify-code-deploy/src/main.ts",
+        "tsConfig": "apps/notify-code-deploy/tsconfig.app.json"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/notify-code-deploy/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/notify-code-deploy"],
+      "options": {
+        "jestConfig": "apps/notify-code-deploy/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

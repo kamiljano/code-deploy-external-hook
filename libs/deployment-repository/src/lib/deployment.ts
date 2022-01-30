@@ -1,3 +1,5 @@
+export type DeploymentStage = 'PRE_TRAFFIC' | 'POST_TRAFFIC';
+
 export interface Deployment {
   id: string;
   ttl: number;
@@ -5,5 +7,5 @@ export interface Deployment {
   lifecycleEventHookExecutionId: string;
   applicationName: string;
   deploymentGroupName: string;
-  stage: 'PRE_TRAFFIC' | 'POST_TRAFFIC';
+  stage: DeploymentStage;
 }

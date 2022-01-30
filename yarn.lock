@@ -109,7 +109,7 @@
     "@aws-cdk/core" "1.140.0"
     constructs "^3.3.69"
 
-"@aws-cdk/aws-codedeploy@^1.140.0":
+"@aws-cdk/aws-codedeploy@1.140.0":
   version "1.140.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-codedeploy/-/aws-codedeploy-1.140.0.tgz#6cb659c6f0717972a85e15ad003b82dc3d084d03"
   integrity sha512-Of+fgjkdmYw7COvJ7GY9/Raw8pnHm1riIE/6zMVONci2Sr61iD0alY6cfz8NnYbfGZ3UvUAGOvOZ+ANwx4kGLw==
@@ -157,7 +157,7 @@
     constructs "^3.3.69"
     punycode "^2.1.1"
 
-"@aws-cdk/aws-dynamodb@^1.140.0":
+"@aws-cdk/aws-dynamodb@1.140.0":
   version "1.140.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-dynamodb/-/aws-dynamodb-1.140.0.tgz#50406220aae0608a106d22a564ef4c4ec6aaefa9"
   integrity sha512-aNDrxYAHHPeXoy6WtYPFVZ+6XfoyKRxtSKmZdN07JoqboAkvvqrtzLExn2feMFjdHmL3l9E1huAlyBQ1kMQ/5g==
@@ -262,7 +262,7 @@
     "@aws-cdk/core" "1.140.0"
     constructs "^3.3.69"
 
-"@aws-cdk/aws-iam@1.140.0", "@aws-cdk/aws-iam@^1.140.0":
+"@aws-cdk/aws-iam@1.140.0":
   version "1.140.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-iam/-/aws-iam-1.140.0.tgz#3ec13fc6e6af0b32fed33394b91f3445f0fd9389"
   integrity sha512-c9TAx+rdvJqTf+VErH9RLiAawFJ9aebuRNFfGjEK48U7gVkIdqbEEIZtgmjig6Ii8fyGH7gvkHTDXsj5iQ9MLA==
@@ -294,7 +294,7 @@
     "@aws-cdk/cx-api" "1.140.0"
     constructs "^3.3.69"
 
-"@aws-cdk/aws-lambda@1.140.0", "@aws-cdk/aws-lambda@^1.140.0":
+"@aws-cdk/aws-lambda@1.140.0":
   version "1.140.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-lambda/-/aws-lambda-1.140.0.tgz#c617bff9de76931a2d8a595ca0c2d73d6b002aa5"
   integrity sha512-u6fi8I7hqPKUlmcwyGH1gTjAzd81gfEQWW9O7RXvbE8uXx0us8dIyO3qD94Dz9UoOx9T0Sprw1eBUKLcq5wtcg==
@@ -319,7 +319,7 @@
     "@aws-cdk/region-info" "1.140.0"
     constructs "^3.3.69"
 
-"@aws-cdk/aws-logs@1.140.0", "@aws-cdk/aws-logs@^1.140.0":
+"@aws-cdk/aws-logs@1.140.0":
   version "1.140.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-logs/-/aws-logs-1.140.0.tgz#de14b8728decc06d3c215c241873e834473178b7"
   integrity sha512-LEIF4QGnG71ZgNAYw5E3/MECT++vmtvFX/yZFQlhibVF2qgthcIwJPoH4vwVsZ8Zq061MWfznu6ywHNq/pKr7Q==
@@ -435,7 +435,7 @@
     jsonschema "^1.4.0"
     semver "^7.3.5"
 
-"@aws-cdk/core@1.140.0", "@aws-cdk/core@^1.140.0":
+"@aws-cdk/core@1.140.0":
   version "1.140.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/core/-/core-1.140.0.tgz#7a94ef54a59ab288ab249b1f7c8591bccf393e52"
   integrity sha512-2tc9Da0ApklPYdIZaY/9giKXOqqR6NFEsnV70pbiIG/ladzsm8kFN2/OZYauGWlUnhR8VXZoz3IFXJv0cKzUIw==
@@ -1102,6 +1102,13 @@
     "@aws-sdk/node-config-provider" "3.47.2"
     "@aws-sdk/property-provider" "3.47.2"
     "@aws-sdk/types" "3.47.1"
+    tslib "^2.3.0"
+
+"@aws-sdk/util-dynamodb@^3.49.0":
+  version "3.49.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/util-dynamodb/-/util-dynamodb-3.49.0.tgz#c7a99dc3ed9a6bf65fbc503544e85a9e2b3fb95c"
+  integrity sha512-TOvcUPiNNRPEeSuTBgnFT3gm6BNp5gA32qF9moSOVp1hUjjWWJJ3uiTpfE2m/5cZj/Fndgg3ixrLoUPSs8eH1A==
+  dependencies:
     tslib "^2.3.0"
 
 "@aws-sdk/util-hex-encoding@3.47.1":
@@ -1937,6 +1944,11 @@
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.2.tgz#423c77877d0569db20e1fc80885ac4118314010e"
   integrity sha512-eZxlbI8GZscaGS7kkc/trHTT5xgrjH3/1n2JDwusC9iahPKWMRvRjJSAN5mCXviuTGQ/lHnhvv8Q1YTpnfz9gA==
+
+"@types/aws-lambda@^8.10.92":
+  version "8.10.92"
+  resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.92.tgz#645f769ff88b8eba1acd35542695ac322c7757c4"
+  integrity sha512-dB14TltT1SNq73z3MaZfKyyBZ37NAgAFl8jze59bisR4fJ6pB6AYGxItHFkooZbN7UcVJX/cFudM4p8wp1W4rA==
 
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.14":
   version "7.1.18"

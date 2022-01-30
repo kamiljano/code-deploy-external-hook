@@ -58,6 +58,7 @@ export default function wrap(handle: Handler): Handler {
       await handle(event);
     } catch (err) {
       ctx.log.error(err, 'Failed to execute the CodeDeployHook');
+      throw err;
     }
   };
 }

@@ -4,6 +4,7 @@
     "code-deploy-hook": "apps/code-deploy-hook",
     "deployment-repository": "libs/deployment-repository",
     "infra": "apps/infra",
+    "notify-code-deploy": "apps/notify-code-deploy",
     "test-infra": "apps/test-infra"
   }
 }

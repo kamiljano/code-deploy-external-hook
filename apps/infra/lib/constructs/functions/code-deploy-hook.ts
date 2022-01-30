@@ -17,7 +17,7 @@ export default class CodeDeployHook extends NodeFunction {
       functionName: props.functionName,
       environment: {
         DEPLOYMENT_TABLE_NAME: props.deploymentTable.tableName,
-        DEPLOYMENT_TABLE_TTL: String(600), // 600s = 10 minutes
+        DEPLOYMENT_TABLE_TTL: String(60 * 60 * 12), // 12 hours
         LIFECYCLE_STAGE: props.lifecycleStage,
       },
     });

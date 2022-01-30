@@ -1,5 +1,11 @@
-import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb';
-import { Deployment } from './deployment';
+import {
+  BatchGetItemCommand,
+  BatchWriteItemCommand,
+  DynamoDBClient,
+  PutItemCommand,
+} from '@aws-sdk/client-dynamodb';
+import { unmarshall } from '@aws-sdk/util-dynamodb';
+import { Deployment, DeploymentStage } from './deployment';
 
 interface DeploymentRepositoryProps {
   readonly ttl: number;
@@ -42,6 +48,60 @@ export class DeploymentRepository {
           applicationName: {
             S: deployment.applicationName,
           },
+        },
+      })
+    );
+  }
+
+  async getDeployments(
+    applicationName: string,
+    hookType: DeploymentStage,
+    deploymentGroupNames: string[]
+  ): Promise<Deployment[]> {
+    if (!deploymentGroupNames.length) return [];
+
+    const result = await this.db.send(
+      new BatchGetItemCommand({
+        RequestItems: {
+          [this.table]: {
+            Keys: deploymentGroupNames.map((deploymentGroupName) => ({
+              id: {
+                S: `${applicationName}:${deploymentGroupName}:${hookType}`,
+              },
+            })),
+          },
+        },
+      })
+    );
+
+    if (!result.Responses) return [];
+
+    return result.Responses[this.table].map((item) =>
+      unmarshall(item)
+    ) as Deployment[];
+  }
+
+  async deleteDeployments(
+    applicationName: string,
+    hookType: DeploymentStage,
+    deploymentGroupNames: string[]
+  ) {
+    if (!deploymentGroupNames.length) {
+      return;
+    }
+
+    await this.db.send(
+      new BatchWriteItemCommand({
+        RequestItems: {
+          [this.table]: deploymentGroupNames.map((deploymentGroupName) => ({
+            DeleteRequest: {
+              Key: {
+                id: {
+                  S: `${applicationName}:${deploymentGroupName}:${hookType}`,
+                },
+              },
+            },
+          })),
         },
       })
     );
