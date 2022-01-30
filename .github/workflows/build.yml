@@ -1,0 +1,25 @@
+name: Test project
+on: [push]
+jobs:
+  Prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+  Build:
+    runs-on: ubuntu-latest
+    needs: Prepare
+    steps:
+      - run: ls -la
+      - name: Build
+        run: yarn build
+
+  Test:
+    runs-on: ubuntu-latest
+    needs: Prepare
+    steps:
+      - name: Build
+        run: yarn test
