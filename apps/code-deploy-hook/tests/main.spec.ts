@@ -1,4 +1,4 @@
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DeploymentRepository } from '@code-deploy-external-hook/deployment-repository';
 import { CodeDeployHookEvent } from '../src/code-deploy-hook-event';
 import { handle } from '../src/main';
 
@@ -22,33 +22,14 @@ describe('Given the code-deploy-hook lambda handler, When the lambda is invoked 
   test('With a pre-traffic event, Then the lambda stores that info in the DynamoDB table', async () => {
     await handle(event);
 
-    expect(DynamoDBClient.prototype.send).toHaveBeenCalledTimes(1);
-    expect(
-      (DynamoDBClient.prototype.send as jest.Mock).mock.calls[0][0].input
-    ).toEqual({
-      TableName: process.env.DEPLOYMENT_TABLE_NAME,
-      Item: {
-        ttl: {
-          N: String(
-            Math.ceil(now / 1000) +
-              parseInt(process.env.DEPLOYMENT_TABLE_TTL as string, 10)
-          ),
-        },
-        id: {
-          S: 'WordPress_App:WordPress_DG:PRE_TRAFFIC',
-        },
-        deploymentGroupName: { S: 'WordPress_DG' },
-        deploymentId: { S: event.DeploymentId },
-        lifecycleEventHookExecutionId: {
-          S: event.LifecycleEventHookExecutionId,
-        },
-        applicationName: {
-          S: 'WordPress_App',
-        },
-        stage: {
-          S: 'PRE_TRAFFIC',
-        },
-      },
+    expect(DeploymentRepository.prototype.saveDeployment).toHaveBeenCalledTimes(
+      1
+    );
+    expect(DeploymentRepository.prototype.saveDeployment).toHaveBeenCalledWith({
+      applicationName: 'WordPress_App',
+      deploymentGroupName: 'WordPress_DG',
+      deploymentId: 'test-deployment-id',
+      lifecycleEventHookExecutionId: 'test-lifecycle-event-hook-execution-id',
     });
   });
 });
