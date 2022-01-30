@@ -17,7 +17,7 @@ There are lambda logs available, but those are less than optimal for a long chai
 
 Introducing code-deploy-external-hook!
 
-![architecture](./docs/architecture.svg)
+![architecture](./docs/architecture.png)
 
 The approach allows to execute the tests directly from the CI/CD machine that is running the original pipeline.
 
