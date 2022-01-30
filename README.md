@@ -1,94 +1,40 @@
+# About
 
+The project aims to make it simpler to execute blue-green deployments in AWS using a proper
+CI/CD tool, rather than a lambda to validate the deployment.
 
-# CodeDeployExternalHook
+AWS uses CodeDeploy to run the blue-green deployments. Depending on how you set up your
+CI/CD, CodeDeploy may be triggered by CodeBuild, CodePipeline or CloudFormation. Now matter how it
+is started however, it ends up working in pretty much the same way. In order to validate the blue-green
+deployment a user may choose to set up pre-traffic and/or post-traffic hooks in their CodeDeploy deployments.
+Those hooks are essentially lambdas that are responsible for running basic tests on the ongoing deployment
+and send a notification back to CodeDeploy letting it know whether the tests were successful or not.
+CodeDeploy will the either proceed with the follow-up deployment steps or roll-back the deployment.
 
-This project was generated using [Nx](https://nx.dev).
+The issue with this standard approach is that the user is limited to what lambda can really do.
+The tests have to finish within 15 minutes (maximum lambda execution time) and there are no test reports.
+There are lambda logs available, but those are less than optimal for a long chain of logs produced by tests.
 
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
+Introducing code-deploy-external-hook!
 
-🔎 **Smart, Extensible Build Framework**
+![architecture](./docs/architecture.svg)
 
-## Adding capabilities to your workspace
+The approach allows to execute the tests directly from the CI/CD machine that is running the original pipeline.
 
-Nx supports many plugins which add capabilities for developing different types of applications and different tools.
+1. The pipeline keeps polling the API Gateway to see if all deployments it is interested in are in the desired state
+   (like for instance until all lambdas on your CloudFormation stack are ready for the pre-traffic tests)
 
-These capabilities include generating applications, libraries, etc as well as the devtools to test, and build projects as well.
+2. The pipeline executes the tests.
 
-Below are our core plugins:
+3. The pipeline sends a follow-up request to API Gateway stating whether the tests were successful or not. That
+   then triggers appropriate follow-up steps in CodeDeploy
 
-- [React](https://reactjs.org)
-  - `npm install --save-dev @nrwl/react`
-- Web (no framework frontends)
-  - `npm install --save-dev @nrwl/web`
-- [Angular](https://angular.io)
-  - `npm install --save-dev @nrwl/angular`
-- [Nest](https://nestjs.com)
-  - `npm install --save-dev @nrwl/nest`
-- [Express](https://expressjs.com)
-  - `npm install --save-dev @nrwl/express`
-- [Node](https://nodejs.org)
-  - `npm install --save-dev @nrwl/node`
+# Usage
 
-There are also many [community plugins](https://nx.dev/community) you could add.
+In order to deploy, clone the project, go to its root directory and execute
 
-## Generate an application
-
-Run `nx g @nrwl/react:app my-app` to generate an application.
-
-> You can use any of the plugins above to generate applications as well.
-
-When using Nx, you can create multiple applications and libraries in the same workspace.
-
-## Generate a library
-
-Run `nx g @nrwl/react:lib my-lib` to generate a library.
-
-> You can also use any of the plugins above to generate libraries as well.
-
-Libraries are shareable across libraries and applications. They can be imported from `@code-deploy-external-hook/mylib`.
-
-## Development server
-
-Run `nx serve my-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `nx g @nrwl/react:component my-component --project=my-app` to generate a new component.
-
-## Build
-
-Run `nx build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `nx test my-app` to execute the unit tests via [Jest](https://jestjs.io).
-
-Run `nx affected:test` to execute the unit tests affected by a change.
-
-## Running end-to-end tests
-
-Run `ng e2e my-app` to execute the end-to-end tests via [Cypress](https://www.cypress.io).
-
-Run `nx affected:e2e` to execute the end-to-end tests affected by a change.
-
-## Understand your workspace
-
-Run `nx dep-graph` to see a diagram of the dependencies of your projects.
-
-## Further help
-
-Visit the [Nx Documentation](https://nx.dev) to learn more.
-
-
-
-## ☁ Nx Cloud
-
-### Distributed Computation Caching & Distributed Task Execution
-
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-cloud-card.png"></p>
-
-Nx Cloud pairs with Nx in order to enable you to build and test code more rapidly, by up to 10 times. Even teams that are new to Nx can connect to Nx Cloud and start saving time instantly.
-
-Teams using Nx gain the advantage of building full-stack applications with their preferred framework alongside Nx’s advanced code generation and project dependency graph, plus a unified experience for both frontend and backend developers.
-
-Visit [Nx Cloud](https://nx.app/) to learn more.
+```shell
+$ yarn install
+$ yarn build
+$ yarn deploy
+```
