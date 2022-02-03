@@ -5,6 +5,6 @@
     "deployment-repository": "libs/deployment-repository",
     "infra": "apps/infra",
     "notify-code-deploy": "apps/notify-code-deploy",
-    "test-infra": "apps/test-infra"
+    "test-infra": "examples/blue-green-lambda-deployment-with-cdk"
   }
 }

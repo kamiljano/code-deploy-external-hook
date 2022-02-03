@@ -46,6 +46,12 @@ $ yarn deploy
 Once deployed, you can look up the stack `code-deploy-external-hook` in CloudFormation. One of its outputs is `ApiUrl`.
 You'll need that to execute the API Gateway requests.
 
+## Integrating the hooks into the deployment
+
+The following are simple examples of how to use CodeDeploy to execute the blue-green deployment:
+
+* [of a lambda function, using CDK](./examples/blue-green-lambda-deployment-with-cdk/lib/test-infra-stack.ts)
+
 ## REST API
 
 ### List the deployments
