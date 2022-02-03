@@ -7,5 +7,7 @@ const app = new App();
 new InfraStack(app, 'InfraStack', {
   stackName: 'code-deploy-external-hook',
   description:
-    'The stack contains tools allowing to verify the deployment from outside of AWS',
+    'The stack contains tools allowing to verify the deployment from outside of AWS.',
+  extraDescription:
+    'More info on https://github.com/kamiljano/code-deploy-external-hook',
 });

@@ -3,13 +3,7 @@ import {
   LambdaDeploymentGroup,
 } from '@aws-cdk/aws-codedeploy';
 import { LambdaDeploymentConfig } from '@aws-cdk/aws-codedeploy/lib/lambda/deployment-config';
-import {
-  ManagedPolicy,
-  PolicyDocument,
-  PolicyStatement,
-  Role,
-  ServicePrincipal,
-} from '@aws-cdk/aws-iam';
+import { ManagedPolicy, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
 import {
   Alias,
   Code,
@@ -75,16 +69,6 @@ export class TestInfraStack extends Stack {
             Fn.importValue('code-deploy-external-hook-invocation-policy')
           ),
         ],
-        inlinePolicies: {
-          DeployLambda: new PolicyDocument({
-            statements: [
-              new PolicyStatement({
-                actions: ['lambda:*'],
-                resources: ['*'],
-              }),
-            ],
-          }),
-        },
       }),
     });
   }

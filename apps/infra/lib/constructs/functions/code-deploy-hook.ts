@@ -7,13 +7,14 @@ export interface CodeDeployHookProps {
   readonly functionName: string;
   readonly deploymentTable: Table;
   readonly lifecycleStage: 'PRE_TRAFFIC' | 'POST_TRAFFIC';
+  readonly extraDescription: string;
 }
 
 export default class CodeDeployHook extends NodeFunction {
   constructor(scope: Construct, id: string, props: CodeDeployHookProps) {
     super(scope, id, {
       projectName: 'code-deploy-hook',
-      description: 'Lambda that is triggered as a CodeDeploy hook',
+      description: `Lambda that is triggered as a CodeDeploy hook. ${props.extraDescription}`,
       functionName: props.functionName,
       environment: {
         DEPLOYMENT_TABLE_NAME: props.deploymentTable.tableName,
