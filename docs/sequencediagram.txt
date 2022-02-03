@@ -1,0 +1,20 @@
+participant CI/CD Pipeline
+participant CloudFormation (Optional depending on your pipeline)
+participant CodeDeploy
+participant Pre/Post traffic hook
+participant DynamoDB
+participant API Gateway
+
+CI/CD Pipeline->CloudFormation (Optional depending on your pipeline):Start deployment
+CI/CD Pipeline->API Gateway:Continuously poll to see if the deployment is ready to be tested. That has to be executed in parallel with the deployment process
+API Gateway->DynamoDB:Query to see if hook data is available
+CloudFormation (Optional depending on your pipeline)->CodeDeploy:Start deployment
+CodeDeploy->CodeDeploy:Deploy new services/lambdas
+CodeDeploy->Pre/Post traffic hook:Notify that the deployment is ready to be tested
+Pre/Post traffic hook->DynamoDB:Store the data of the ready-for-testing deployment
+CI/CD Pipeline<--API Gateway:Notify that the deployment is ready for testing
+CI/CD Pipeline->CI/CD Pipeline:Execute the tests
+CI/CD Pipeline->API Gateway:Notify that the tests either succeeded or failed
+API Gateway->CodeDeploy:Notify about success or failure
+CloudFormation (Optional depending on your pipeline)<--CodeDeploy:Continue deployment
+CI/CD Pipeline<--CloudFormation (Optional depending on your pipeline):Deployment finished

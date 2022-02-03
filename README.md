@@ -29,7 +29,11 @@ The approach allows to execute the tests directly from the CI/CD machine that is
 3. The pipeline sends a follow-up request to API Gateway stating whether the tests were successful or not. That
    then triggers appropriate follow-up steps in CodeDeploy
 
+![sequencediagram](./docs/sequencediagram.svg)
+
 # Usage
+
+## Installation
 
 In order to deploy, clone the project, go to its root directory and execute
 
@@ -38,3 +42,61 @@ $ yarn install
 $ yarn build
 $ yarn deploy
 ```
+
+Once deployed, you can look up the stack `code-deploy-external-hook` in CloudFormation. One of its outputs is `ApiUrl`.
+You'll need that to execute the API Gateway requests.
+
+## REST API
+
+### List the deployments
+
+This is the endpoint that should be polled until it contains responses of all desired components of the application
+
+* `CodeDeployApplicationName` - CodeDeploy application name under which the service/lambda is being deployed
+* `stage` - `PRE_TRAFFIC` or `POST_TRAFFIC`. The stage that CodeDeploy is configured to verify.
+* `CodeDeployDeploymentGroupName` - an array of 1 or more CodeDeploy Deployment Group Names defined under the same
+   CodeDeploy application. 
+
+POST `{ApiUrl}/deployments/{CodeDeployApplicationName}/{stage}`
+
+```json
+{
+  "deploymentGroupNames": ["{CodeDeployDeploymentGroupName}"]
+}
+```
+
+The response contains an empty object if none of the deployment group names are yet ready for the tests.
+Otherwise, it's a map where the key is the deployment group name and the value is an object with details
+necessary to submit the status of the deployment back to CodeDeploy. That is mostly used internally, but can be used
+directly within your CI/CD if needed.
+
+Example response: 
+
+```json
+{
+    "deployments": {
+        "myLambda": {
+            "id": "myApplication:myLambda:POST_TRAFFIC",
+            "deploymentId": "d-IHWDEND8F",
+            "lifecycleEventHookExecutionId": "eyJlbmNyeXB0ZWREYXRhIjoiSnZFVUlmcmRRTmNNeklxMlBQRSt6ZFhaa3UvRTg3NFdNYnV0Q0ZwZElBNDlaT0owT1hsejJQSGNjd1M4em91U096TzZ5UGxuYU9zL0dVZlBaV3BGRmtKbDE2My8xS2Q1UGZCYkFMdGpLQWhmMjdlVjd2M05obno4UFFYNFNJemNCNStiMmY1WCIsIml2UGFyYW1ldGVyU3BlYyI6ImtTdVFORGQ1K094MnZKOFkiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0="
+        }
+    }
+}
+```
+
+### Submit deployment validation result
+
+Once all the necessary tests are executed, a request has to be sent to submit the test result that will either
+allow to continue the deployment or roll it back.
+
+DELETE `{ApiUrl}/deployments/{CodeDeployApplicationName}/{stage}`
+
+```json
+{
+  "deploymentTests": { "MyCodeDeployDeploymentGroupName": "SUCCESS" }
+}
+```
+
+For each of the services/lambdas that were validated, either a `SUCCESS` or `FAILURE` value has to be submitted.
+
+On success the endpoint returns status `204 - No Content`.
